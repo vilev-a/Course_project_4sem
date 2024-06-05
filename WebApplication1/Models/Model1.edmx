@@ -1,0 +1,496 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Course_workModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Activity">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nchar" MaxLength="20" Nullable="false" />
+          <Property Name="Price" Type="money" Nullable="false" />
+          <Property Name="MedExamNeeded" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ActivityForCard">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CardID" Type="int" />
+          <Property Name="ActivityID" Type="int" />
+        </EntityType>
+        <EntityType Name="Attendance">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Data_" Type="date" Nullable="false" />
+          <Property Name="ClientID" Type="int" />
+          <Property Name="ActivityID" Type="int" />
+        </EntityType>
+        <EntityType Name="AttendanceMode">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Card_">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientID" Type="int" />
+          <Property Name="AttendanceModeID" Type="int" />
+        </EntityType>
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nchar" MaxLength="20" Nullable="false" />
+          <Property Name="LastName" Type="nchar" MaxLength="20" Nullable="false" />
+          <Property Name="MedExamPassed" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Course_work.dbo.CustomerInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="CustomerInfo">
+          <Key>
+            <PropertyRef Name="CardID" />
+            <PropertyRef Name="Attendance mode" />
+          </Key>
+          <Property Name="Full Name" Type="nvarchar" MaxLength="41" />
+          <Property Name="CardID" Type="int" Nullable="false" />
+          <Property Name="Number of activities" Type="int" />
+          <Property Name="Attendance mode" Type="nchar" MaxLength="20" Nullable="false" />
+          <Property Name="Total cost" Type="money" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <Association Name="FK_ActivityForCard_ActivityID">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="0..1" />
+          <End Role="ActivityForCard" Type="Self.ActivityForCard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ActivityForCard">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActivityForCard_CardID">
+          <End Role="Card_" Type="Self.Card_" Multiplicity="0..1" />
+          <End Role="ActivityForCard" Type="Self.ActivityForCard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Card_">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ActivityForCard">
+              <PropertyRef Name="CardID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="0..1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_Client">
+          <End Role="Client" Type="Self.Client" Multiplicity="0..1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Client">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Card_AttendanceModeID">
+          <End Role="AttendanceMode" Type="Self.AttendanceMode" Multiplicity="0..1" />
+          <End Role="Card_" Type="Self.Card_" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttendanceMode">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Card_">
+              <PropertyRef Name="AttendanceModeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Card_ClientID">
+          <End Role="Client" Type="Self.Client" Multiplicity="0..1" />
+          <End Role="Card_" Type="Self.Card_" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Client">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Card_">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Course_workModelStoreContainer">
+          <EntitySet Name="Activity" EntityType="Self.Activity" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ActivityForCard" EntityType="Self.ActivityForCard" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attendance" EntityType="Self.Attendance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AttendanceMode" EntityType="Self.AttendanceMode" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Card_" EntityType="Self.Card_" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Client" EntityType="Self.Client" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerInfo" EntityType="Self.CustomerInfo" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [CustomerInfo].[Full Name] AS [Full Name], 
+    [CustomerInfo].[CardID] AS [CardID], 
+    [CustomerInfo].[Number of activities] AS [Number of activities], 
+    [CustomerInfo].[Attendance mode] AS [Attendance mode], 
+    [CustomerInfo].[Total cost] AS [Total cost]
+    FROM [dbo].[CustomerInfo] AS [CustomerInfo]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_ActivityForCard_ActivityID" Association="Self.FK_ActivityForCard_ActivityID">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="ActivityForCard" EntitySet="ActivityForCard" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActivityForCard_CardID" Association="Self.FK_ActivityForCard_CardID">
+            <End Role="Card_" EntitySet="Card_" />
+            <End Role="ActivityForCard" EntitySet="ActivityForCard" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_Activity" Association="Self.FK_Attendance_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="Attendance" EntitySet="Attendance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_Client" Association="Self.FK_Attendance_Client">
+            <End Role="Client" EntitySet="Client" />
+            <End Role="Attendance" EntitySet="Attendance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Card_AttendanceModeID" Association="Self.FK_Card_AttendanceModeID">
+            <End Role="AttendanceMode" EntitySet="AttendanceMode" />
+            <End Role="Card_" EntitySet="Card_" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Card_ClientID" Association="Self.FK_Card_ClientID">
+            <End Role="Client" EntitySet="Client" />
+            <End Role="Card_" EntitySet="Card_" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Course_workModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Activity">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="MedExamNeeded" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ActivityForCard" Relationship="Self.FK_ActivityForCard_ActivityID" FromRole="Activity" ToRole="ActivityForCard" />
+          <NavigationProperty Name="Attendance" Relationship="Self.FK_Attendance_Activity" FromRole="Activity" ToRole="Attendance" />
+        </EntityType>
+        <EntityType Name="ActivityForCard">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CardID" Type="Int32" />
+          <Property Name="ActivityID" Type="Int32" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_ActivityForCard_ActivityID" FromRole="ActivityForCard" ToRole="Activity" />
+          <NavigationProperty Name="Card_" Relationship="Self.FK_ActivityForCard_CardID" FromRole="ActivityForCard" ToRole="Card_" />
+        </EntityType>
+        <EntityType Name="Attendance">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Data_" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ClientID" Type="Int32" />
+          <Property Name="ActivityID" Type="Int32" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_Attendance_Activity" FromRole="Attendance" ToRole="Activity" />
+          <NavigationProperty Name="Client" Relationship="Self.FK_Attendance_Client" FromRole="Attendance" ToRole="Client" />
+        </EntityType>
+        <EntityType Name="AttendanceMode">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Card_" Relationship="Self.FK_Card_AttendanceModeID" FromRole="AttendanceMode" ToRole="Card_" />
+        </EntityType>
+        <EntityType Name="Card_">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientID" Type="Int32" />
+          <Property Name="AttendanceModeID" Type="Int32" />
+          <NavigationProperty Name="ActivityForCard" Relationship="Self.FK_ActivityForCard_CardID" FromRole="Card_" ToRole="ActivityForCard" />
+          <NavigationProperty Name="AttendanceMode" Relationship="Self.FK_Card_AttendanceModeID" FromRole="Card_" ToRole="AttendanceMode" />
+          <NavigationProperty Name="Client" Relationship="Self.FK_Card_ClientID" FromRole="Card_" ToRole="Client" />
+        </EntityType>
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="MedExamPassed" Type="Boolean" />
+          <NavigationProperty Name="Attendance" Relationship="Self.FK_Attendance_Client" FromRole="Client" ToRole="Attendance" />
+          <NavigationProperty Name="Card_" Relationship="Self.FK_Card_ClientID" FromRole="Client" ToRole="Card_" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="CustomerInfo">
+          <Key>
+            <PropertyRef Name="CardID" />
+            <PropertyRef Name="Attendance_mode" />
+          </Key>
+          <Property Name="Full_Name" Type="String" MaxLength="41" FixedLength="false" Unicode="true" />
+          <Property Name="CardID" Type="Int32" Nullable="false" />
+          <Property Name="Number_of_activities" Type="Int32" />
+          <Property Name="Attendance_mode" Type="String" MaxLength="20" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="Total_cost" Type="Decimal" Precision="19" Scale="4" />
+        </EntityType>
+        <Association Name="FK_ActivityForCard_ActivityID">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="0..1" />
+          <End Role="ActivityForCard" Type="Self.ActivityForCard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ActivityForCard">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="0..1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActivityForCard_CardID">
+          <End Role="Card_" Type="Self.Card_" Multiplicity="0..1" />
+          <End Role="ActivityForCard" Type="Self.ActivityForCard" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Card_">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ActivityForCard">
+              <PropertyRef Name="CardID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_Client">
+          <End Role="Client" Type="Self.Client" Multiplicity="0..1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Client">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Card_AttendanceModeID">
+          <End Role="AttendanceMode" Type="Self.AttendanceMode" Multiplicity="0..1" />
+          <End Role="Card_" Type="Self.Card_" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AttendanceMode">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Card_">
+              <PropertyRef Name="AttendanceModeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Card_ClientID">
+          <End Role="Client" Type="Self.Client" Multiplicity="0..1" />
+          <End Role="Card_" Type="Self.Card_" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Client">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Card_">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Course_workEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Activity" EntityType="Self.Activity" />
+          <EntitySet Name="ActivityForCard" EntityType="Self.ActivityForCard" />
+          <EntitySet Name="Attendance" EntityType="Self.Attendance" />
+          <EntitySet Name="AttendanceMode" EntityType="Self.AttendanceMode" />
+          <EntitySet Name="Card_" EntityType="Self.Card_" />
+          <EntitySet Name="Client" EntityType="Self.Client" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="CustomerInfo" EntityType="Self.CustomerInfo" />
+          <AssociationSet Name="FK_ActivityForCard_ActivityID" Association="Self.FK_ActivityForCard_ActivityID">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="ActivityForCard" EntitySet="ActivityForCard" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_Activity" Association="Self.FK_Attendance_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="Attendance" EntitySet="Attendance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActivityForCard_CardID" Association="Self.FK_ActivityForCard_CardID">
+            <End Role="Card_" EntitySet="Card_" />
+            <End Role="ActivityForCard" EntitySet="ActivityForCard" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_Client" Association="Self.FK_Attendance_Client">
+            <End Role="Client" EntitySet="Client" />
+            <End Role="Attendance" EntitySet="Attendance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Card_AttendanceModeID" Association="Self.FK_Card_AttendanceModeID">
+            <End Role="AttendanceMode" EntitySet="AttendanceMode" />
+            <End Role="Card_" EntitySet="Card_" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Card_ClientID" Association="Self.FK_Card_ClientID">
+            <End Role="Client" EntitySet="Client" />
+            <End Role="Card_" EntitySet="Card_" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Course_workModelStoreContainer" CdmEntityContainer="Course_workEntities">
+          <EntitySetMapping Name="Activity">
+            <EntityTypeMapping TypeName="Course_workModel.Activity">
+              <MappingFragment StoreEntitySet="Activity">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="MedExamNeeded" ColumnName="MedExamNeeded" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ActivityForCard">
+            <EntityTypeMapping TypeName="Course_workModel.ActivityForCard">
+              <MappingFragment StoreEntitySet="ActivityForCard">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CardID" ColumnName="CardID" />
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Attendance">
+            <EntityTypeMapping TypeName="Course_workModel.Attendance">
+              <MappingFragment StoreEntitySet="Attendance">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Data_" ColumnName="Data_" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AttendanceMode">
+            <EntityTypeMapping TypeName="Course_workModel.AttendanceMode">
+              <MappingFragment StoreEntitySet="AttendanceMode">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Card_">
+            <EntityTypeMapping TypeName="Course_workModel.Card_">
+              <MappingFragment StoreEntitySet="Card_">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="AttendanceModeID" ColumnName="AttendanceModeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Client">
+            <EntityTypeMapping TypeName="Course_workModel.Client">
+              <MappingFragment StoreEntitySet="Client">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="MedExamPassed" ColumnName="MedExamPassed" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="Course_workModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerInfo">
+            <EntityTypeMapping TypeName="Course_workModel.CustomerInfo">
+              <MappingFragment StoreEntitySet="CustomerInfo">
+                <ScalarProperty Name="Full_Name" ColumnName="Full Name" />
+                <ScalarProperty Name="CardID" ColumnName="CardID" />
+                <ScalarProperty Name="Number_of_activities" ColumnName="Number of activities" />
+                <ScalarProperty Name="Attendance_mode" ColumnName="Attendance mode" />
+                <ScalarProperty Name="Total_cost" ColumnName="Total cost" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
